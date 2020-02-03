@@ -1,0 +1,14 @@
+.modal-dialog {
+  max-width: 800px;
+}
+
+.modal-header .modal-title {
+  width: 80%;
+}
+
+.modal-header .close {
+  width: 20%;
+  padding: 0;
+  margin: 0;
+  line-height: 1.5;
+}

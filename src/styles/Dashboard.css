@@ -1,0 +1,31 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.header-container {
+  display: flex;
+}
+
+.dashboard-logo-holder {
+  width: 40%;
+  font-size: 40px;
+  font-family: Archivo, serif;
+}
+
+.dashboard-logo-icon {
+  font-size: 40px;
+  margin: 0px 10px 0px 0px;
+}
+
+.search-holder {
+  margin-top: 10px;
+  width: 60%;
+  float: right;
+}
+
+.nav-tabs {
+  width: 40%;
+  margin: 20px auto;
+}

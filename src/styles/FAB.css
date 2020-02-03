@@ -1,0 +1,21 @@
+.fab {
+  position: fixed;
+  top: 14%;
+  left: 65%;
+  height: 60px;
+  width: 60px;
+  background-color: purple;
+  border-radius: 30px;
+  text-align: center;
+  box-shadow: 0 8px 8px rgba(13, 13, 14, 0.35), 0 8px 8px rgba(13, 13, 14, 0.35);
+}
+
+.fab:hover {
+  cursor: pointer;
+}
+
+.add-todo-icon {
+  color: white;
+  line-height: 60px;
+  font-size: 40px;
+}

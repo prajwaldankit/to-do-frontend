@@ -1,0 +1,42 @@
+.checked {
+  text-decoration: line-through;
+}
+
+.list-item {
+  background-color: #fcfcfc;
+  margin: 10px 5px;
+}
+
+.card-title {
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+
+.card-body {
+  padding: 0.6rem;
+}
+
+.card-text {
+  font-weight: 500;
+  margin-bottom: 0.4rem;
+}
+
+.todo-tools {
+  padding: 2px;
+}
+
+.todo-tools > * {
+  margin: 1px 20px 1px 0px;
+}
+
+.todo-tools > *:hover {
+  cursor: pointer;
+}
+
+.delete-icon {
+  color: red;
+}
+
+.card-footer {
+  padding: 0 0.6rem;
+}
