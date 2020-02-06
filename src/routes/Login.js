@@ -34,7 +34,6 @@ export class Login extends Component {
       password: this.state.password.value
     })
       .then(response => {
-        console.log(response);
         toast.success("Logged in successfully");
         localStorage.setItem("authorization", response.data.token);
         this.setState({

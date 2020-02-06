@@ -74,16 +74,17 @@ export class Dashboard extends Component {
   };
 
   onEditHandler = value => {
-    console.log("Editing functionality yet to be implemented");
     toast.warn("this function is not yet available");
   };
 
   onDeleteHandler = value => {
     removeToDoItem(value)
       .then(response => {
-        console.log("Response", response);
+        toast.success("the item has been deleted");
       })
-      .catch(err => {});
+      .catch(err => {
+        toast.error("the item could not be deleted");
+      });
     let tempItems = this.state.todos.filter(
       (tempValue, index) => value._id !== tempValue._id
     );
@@ -112,7 +113,6 @@ export class Dashboard extends Component {
       );
       return searchedItems;
     }
-    console.log("tempItems", tempItems);
     return tempItems;
   };
 

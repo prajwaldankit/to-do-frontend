@@ -32,20 +32,12 @@ export class Register extends Component {
 
   onSubmitClick = event => {
     event.preventDefault();
-
-    // axios
-    //   .post("/users/register", {
-    //     email: this.state.email.value,
-    //     password: this.state.password.value,
-    //     username: this.state.username.value
-    //   })
     registerUser({
       email: this.state.email.value,
       password: this.state.password.value,
       username: this.state.username.value
     })
       .then(response => {
-        console.log(response);
         if (response.status === 200) {
           toast.success("User successfully created. Redirected to Login page");
           this.setState({
@@ -56,7 +48,6 @@ export class Register extends Component {
         }
       })
       .catch(err => {
-        console.log(err.response);
         toast.error(err.response.data.message);
       });
   };

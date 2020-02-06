@@ -34,7 +34,6 @@ export class AddTodo extends Component {
         content: this.state.todoContent
       })
         .then(response => {
-          console.log(response);
           if (response.status === 200) {
             toast.success("Todo Added Successfully");
             this.props.handleClose();
@@ -44,14 +43,12 @@ export class AddTodo extends Component {
           }
         })
         .catch(err => {
-          console.log(err);
           toast.error(err);
         });
     }
   };
 
   render() {
-    console.log("state", this.state);
     return (
       <>
         <Modal show={this.props.show} onHide={this.props.handleClose}>
