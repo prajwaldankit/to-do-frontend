@@ -2,8 +2,7 @@ import React, { Component } from "react";
 import { Modal, Button, InputGroup, FormControl } from "react-bootstrap";
 import "../styles/AddTodo.css";
 import { toast } from "react-toastify";
-import axios from "../config/axios";
-
+import { addToDoItem } from "./../services/todo";
 export class AddTodo extends Component {
   constructor() {
     super();
@@ -30,26 +29,23 @@ export class AddTodo extends Component {
       toast.error("Todo title cannot be empty");
     } else {
       event.preventDefault();
-      axios({
-        method: "post",
-        url: "/api/todos",
-        headers: {
-          authorization: "Bearer " + localStorage.getItem("authorization")
-        },
-        data: { title: this.state.todoTitle, content: this.state.todoContent }
+      addToDoItem({
+        title: this.state.todoTitle,
+        content: this.state.todoContent
       })
         .then(response => {
           console.log(response);
           if (response.status === 200) {
             toast.success("Todo Added Successfully");
             this.props.handleClose();
+            this.props.reloadList();
           } else {
             toast.error("Some error occured. Please try again later.");
           }
         })
         .catch(err => {
-          console.log(err.response);
-          toast.error(err.response.data.message);
+          console.log(err);
+          toast.error(err);
         });
     }
   };

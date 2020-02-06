@@ -1,6 +1,6 @@
 {
   "homepage": "https://prajwaldankit.github.io/to-do-frontend/.",
-  "name": "tarea-frontend",
+  "name": "todo-app-frontend",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

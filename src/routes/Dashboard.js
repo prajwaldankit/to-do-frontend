@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import axios from "../config/axios";
 import { toast } from "react-toastify";
 import { Redirect } from "react-router-dom";
 import "../styles/App.css";
@@ -10,6 +9,7 @@ import emptyList from "../assets/images/emptyList.png";
 import AddTodo from "../components/AddTodo";
 import FAB from "../components/FAB";
 
+import { getToDoList, editToDoItem, removeToDoItem } from "./../services/todo";
 export class Dashboard extends Component {
   constructor() {
     super();
@@ -23,15 +23,10 @@ export class Dashboard extends Component {
       currentTab: "all",
       showModal: false
     };
+    this.getTodosAgain = this.getTodosAgain.bind(this);
   }
   componentDidMount() {
-    axios({
-      method: "get",
-      url: "/api/todos",
-      headers: {
-        authorization: "Bearer " + localStorage.getItem("authorization")
-      }
-    })
+    getToDoList()
       .then(response => {
         this.setState({
           todos: response.data
@@ -46,13 +41,7 @@ export class Dashboard extends Component {
   }
 
   getTodosAgain() {
-    axios({
-      method: "get",
-      url: "/api/todos",
-      headers: {
-        authorization: "Bearer " + localStorage.getItem("authorization")
-      }
-    })
+    getToDoList()
       .then(response => {
         this.setState({
           todos: response.data
@@ -67,21 +56,12 @@ export class Dashboard extends Component {
   }
 
   onCheckHandler = value => {
-    axios({
-      method: "patch",
-      url: "/api/todos/" + value._id,
-      headers: {
-        authorization: "Bearer " + localStorage.getItem("authorization")
-      },
-      data: {
-        checked: !value.checked
-      }
-    })
+    editToDoItem(value)
       .then(response => {
-        console.log("Response", response);
+        toast.success("the checked status is changed");
       })
       .catch(err => {
-        console.log("Error", err);
+        toast.error("sorry couldn't change the check status");
       });
 
     let tempItems = this.state.todos;
@@ -95,20 +75,15 @@ export class Dashboard extends Component {
 
   onEditHandler = value => {
     console.log("Editing functionality yet to be implemented");
+    toast.warn("this function is not yet available");
   };
 
   onDeleteHandler = value => {
-    axios({
-      method: "delete",
-      url: "/api/todos/" + value._id,
-      headers: {
-        authorization: "Bearer " + localStorage.getItem("authorization")
-      }
-    })
+    removeToDoItem(value)
       .then(response => {
         console.log("Response", response);
       })
-      .catch(err => { });
+      .catch(err => {});
     let tempItems = this.state.todos.filter(
       (tempValue, index) => value._id !== tempValue._id
     );
@@ -116,7 +91,6 @@ export class Dashboard extends Component {
   };
 
   getItemsToDisplay = tab => {
-    console.log("Tab : ", tab);
     let tempItems = "";
     if (tab === "all") {
       tempItems = this.state.todos.filter(item => true);
@@ -168,7 +142,6 @@ export class Dashboard extends Component {
     this.setState({
       showModal: false
     });
-    this.getTodos();
   };
 
   render() {
@@ -176,7 +149,11 @@ export class Dashboard extends Component {
       let itemsToDisplay = this.getItemsToDisplay(this.state.currentTab);
       return (
         <div className="dashboard-container">
-          <AddTodo show={this.state.showModal} handleClose={this.hideModal} />
+          <AddTodo
+            show={this.state.showModal}
+            handleClose={this.hideModal}
+            reloadList={this.getTodosAgain}
+          />
           <div className="dashboard-card">
             <div className="header-container">
               <div className="dashboard-logo-holder">
@@ -230,10 +207,10 @@ export class Dashboard extends Component {
                     );
                   })
                 ) : (
-                    <div className="empty-list">
-                      <img src={emptyList} alt="No Todos" />
-                    </div>
-                  )}
+                  <div className="empty-list">
+                    <img src={emptyList} alt="No Todos" />
+                  </div>
+                )}
               </div>
             </div>
           </div>

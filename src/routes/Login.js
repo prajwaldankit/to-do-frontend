@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import { Button, Form } from "react-bootstrap";
-import axios from "../config/axios";
 import "../styles/App.css";
 import { Link, Redirect } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+import { loginUser } from "./../services/user";
 
 export class Login extends Component {
   constructor() {
@@ -28,11 +29,10 @@ export class Login extends Component {
 
   onSubmitClick = event => {
     event.preventDefault();
-    axios
-      .post("/users/login", {
-        email: this.state.email.value,
-        password: this.state.password.value
-      })
+    loginUser({
+      email: this.state.email.value,
+      password: this.state.password.value
+    })
       .then(response => {
         console.log(response);
         toast.success("Logged in successfully");
@@ -42,7 +42,7 @@ export class Login extends Component {
         });
       })
       .catch(err => {
-        toast.error(err.response.data.message);
+        toast.error("err.response.data.message");
       });
   };
 
@@ -74,7 +74,7 @@ export class Login extends Component {
         <div className="login-container">
           <div className="login-card">
             <div className="logo-holder">
-              <i className="fas fa-tasks logo-icon"></i>tarea
+              <i className="fas fa-tasks logo-icon"></i>Todo-app
             </div>
             <Form>
               <Form.Group controlId="email">

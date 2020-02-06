@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { Button, Form } from "react-bootstrap";
-import axios from "../config/axios";
 import "../styles/App.css";
 import { Link, Redirect } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import { registerUser } from "./../services/user";
 export class Register extends Component {
   constructor() {
     super();
@@ -33,12 +33,17 @@ export class Register extends Component {
   onSubmitClick = event => {
     event.preventDefault();
 
-    axios
-      .post("/users/register", {
-        email: this.state.email.value,
-        password: this.state.password.value,
-        username: this.state.username.value
-      })
+    // axios
+    //   .post("/users/register", {
+    //     email: this.state.email.value,
+    //     password: this.state.password.value,
+    //     username: this.state.username.value
+    //   })
+    registerUser({
+      email: this.state.email.value,
+      password: this.state.password.value,
+      username: this.state.username.value
+    })
       .then(response => {
         console.log(response);
         if (response.status === 200) {
