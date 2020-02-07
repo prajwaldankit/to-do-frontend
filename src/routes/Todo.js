@@ -1,5 +1,12 @@
 import React, { Component } from "react";
 
+/**
+ *
+ *
+ * @export
+ * @class Todo
+ * @extends {Component}
+ */
 export class Todo extends Component {
   todos = "";
   constructor() {

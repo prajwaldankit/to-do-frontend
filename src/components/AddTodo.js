@@ -1,8 +1,17 @@
 import React, { Component } from "react";
-import { Modal, Button, InputGroup, FormControl } from "react-bootstrap";
-import "../styles/AddTodo.css";
 import { toast } from "react-toastify";
+import { Modal, Button, InputGroup, FormControl } from "react-bootstrap";
+
+import "../styles/AddTodo.css";
 import { addToDoItem } from "./../services/todo";
+
+/**
+ *
+ *
+ * @export
+ * @class AddTodo
+ * @extends {Component}
+ */
 export class AddTodo extends Component {
   constructor() {
     super();

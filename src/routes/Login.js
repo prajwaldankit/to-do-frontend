@@ -1,12 +1,19 @@
+import { toast } from "react-toastify";
 import React, { Component } from "react";
 import { Button, Form } from "react-bootstrap";
-import "../styles/App.css";
 import { Link, Redirect } from "react-router-dom";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
+import "../styles/App.css";
+import "react-toastify/dist/ReactToastify.css";
 import { loginUser } from "./../services/user";
 
+/**
+ *
+ *
+ * @export
+ * @class Login
+ * @extends {Component}
+ */
 export class Login extends Component {
   constructor() {
     super();

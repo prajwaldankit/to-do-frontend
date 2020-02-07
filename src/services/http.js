@@ -22,9 +22,7 @@ export function patch(url, item) {
     method: "patch",
     url: url + item._id,
     headers: getRequestHeader(),
-    data: {
-      checked: !item.checked
-    }
+    data: item
   });
 }
 
@@ -35,7 +33,8 @@ export function remove(url, item) {
     headers: getRequestHeader()
   });
 }
-export function getRequestHeader() {
+
+function getRequestHeader() {
   return {
     authorization: `Bearer ${localStorage.getItem("authorization")}`
   };
