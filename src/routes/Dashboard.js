@@ -54,7 +54,7 @@ export class Dashboard extends Component {
 
   onCheckHandler = value => {
     value.checked = !value.checked;
-    editToDoItem(value)
+    editToDoItem({ _id: value._id, checked: value.checked })
       .then(response => {
         toast.success(
           `${value.title} is now ${value.checked ? "checked" : "unchecked"}`
