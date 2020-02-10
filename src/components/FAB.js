@@ -1,6 +1,14 @@
 import React, { Component } from "react";
+
 import "../styles/FAB.css";
 
+/**
+ *
+ *
+ * @export
+ * @class FAB
+ * @extends {Component}
+ */
 export class FAB extends Component {
   render() {
     return (

@@ -1,7 +1,15 @@
-import React, { Component } from "react";
-import "../styles/ListItem.css";
 import { Card } from "react-bootstrap";
+import React, { Component } from "react";
 
+import "../styles/ListItem.css";
+
+/**
+ *
+ *
+ * @export
+ * @class ListItem
+ * @extends {Component}
+ */
 export class ListItem extends Component {
   dateParser(date) {
     return "Created at: " + date.slice(4, 24);

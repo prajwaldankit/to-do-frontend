@@ -1,15 +1,23 @@
-import React, { Component } from "react";
 import { toast } from "react-toastify";
+import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
+import { Form, InputGroup, Tab, Tabs } from "react-bootstrap";
+
 import "../styles/App.css";
 import "../styles/Dashboard.css";
-import { Form, InputGroup, Tab, Tabs } from "react-bootstrap";
+import FAB from "../components/FAB";
+import AddTodo from "../components/AddTodo";
 import ListItem from "../components/ListItem";
 import emptyList from "../assets/images/emptyList.png";
-import AddTodo from "../components/AddTodo";
-import FAB from "../components/FAB";
-
 import { getToDoList, editToDoItem, removeToDoItem } from "./../services/todo";
+
+/**
+ *
+ *
+ * @export
+ * @class Dashboard
+ * @extends {Component}
+ */
 export class Dashboard extends Component {
   constructor() {
     super();
@@ -23,24 +31,13 @@ export class Dashboard extends Component {
       currentTab: "all",
       showModal: false
     };
-    this.getTodosAgain = this.getTodosAgain.bind(this);
+    this.getTodos = this.getTodos.bind(this);
   }
   componentDidMount() {
-    getToDoList()
-      .then(response => {
-        this.setState({
-          todos: response.data
-        });
-      })
-      .catch(err => {
-        toast.error("Please Login again");
-        this.setState({
-          isAuthorized: false
-        });
-      });
+    this.getTodos();
   }
 
-  getTodosAgain() {
+  getTodos() {
     getToDoList()
       .then(response => {
         this.setState({
@@ -56,21 +53,18 @@ export class Dashboard extends Component {
   }
 
   onCheckHandler = value => {
-    editToDoItem(value)
+    value.checked = !value.checked;
+    editToDoItem({ _id: value._id, checked: value.checked })
       .then(response => {
-        toast.success("the checked status is changed");
+        toast.success(
+          `${value.title} is now ${value.checked ? "checked" : "unchecked"}`
+        );
+        let tempItems = this.state.todos;
+        this.setState({ todos: tempItems });
       })
       .catch(err => {
         toast.error("sorry couldn't change the check status");
       });
-
-    let tempItems = this.state.todos;
-    for (let i = 0; i < tempItems.length; i++) {
-      if (tempItems[i]._id === value._id) {
-        tempItems[i].checked = !tempItems[i].checked;
-      }
-    }
-    this.setState({ todos: tempItems });
   };
 
   onEditHandler = value => {
@@ -81,14 +75,17 @@ export class Dashboard extends Component {
     removeToDoItem(value)
       .then(response => {
         toast.success("the item has been deleted");
+        let tempItems =
+          this.state.todos &&
+          this.state.todos.length &&
+          this.state.todos.filter(
+            (tempValue, index) => value._id !== tempValue._id
+          );
+        this.setState({ todos: tempItems });
       })
       .catch(err => {
         toast.error("the item could not be deleted");
       });
-    let tempItems = this.state.todos.filter(
-      (tempValue, index) => value._id !== tempValue._id
-    );
-    this.setState({ todos: tempItems });
   };
 
   getItemsToDisplay = tab => {
