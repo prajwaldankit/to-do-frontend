@@ -149,7 +149,7 @@ export class Dashboard extends Component {
           <AddTodo
             show={this.state.showModal}
             handleClose={this.hideModal}
-            reloadList={this.getTodosAgain}
+            reloadList={this.getTodos}
           />
           <div className="dashboard-card">
             <div className="header-container">
