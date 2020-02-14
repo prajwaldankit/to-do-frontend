@@ -12,6 +12,7 @@ import "../styles/ListItem.css";
  */
 export class ListItem extends Component {
   dateParser(date) {
+    console.log("date", date);
     return "Created at: " + date.slice(4, 24);
   }
 
@@ -43,6 +44,12 @@ export class ListItem extends Component {
               {checkItem}
               {editIcon}
               {deleteIcon}
+              <button
+                className="btn btn-success"
+                onClick={e => console.log("object")}
+              >
+                open
+              </button>
             </div>
           </Card.Body>
           <Card.Footer className="text-muted">

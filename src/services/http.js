@@ -36,6 +36,6 @@ export function remove(url, item) {
 
 function getRequestHeader() {
   return {
-    authorization: `Bearer ${localStorage.getItem("authorization")}`
+    authorization: `Bearer ${localStorage.getItem("x-token")}`
   };
 }

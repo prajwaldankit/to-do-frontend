@@ -42,7 +42,11 @@ export class Login extends Component {
     })
       .then(response => {
         toast.success("Logged in successfully");
-        localStorage.setItem("authorization", response.data.token);
+        localStorage.setItem("x-token", response.data.tokens.token);
+        localStorage.setItem(
+          "x-tokenRefresh",
+          response.data.tokens.tokenRefresh
+        );
         this.setState({
           isLoggedIn: true
         });

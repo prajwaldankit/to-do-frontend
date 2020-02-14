@@ -8,6 +8,7 @@ import "../styles/Dashboard.css";
 import FAB from "../components/FAB";
 import AddTodo from "../components/AddTodo";
 import ListItem from "../components/ListItem";
+import LogOut from "../components/LogOut";
 import emptyList from "../assets/images/emptyList.png";
 import { getToDoList, editToDoItem, removeToDoItem } from "./../services/todo";
 
@@ -32,9 +33,18 @@ export class Dashboard extends Component {
       showModal: false
     };
     this.getTodos = this.getTodos.bind(this);
+    this.handleLogOut = this.handleLogOut.bind(this);
   }
   componentDidMount() {
     this.getTodos();
+  }
+
+  handleLogOut() {
+    localStorage.clear();
+    this.setState({
+      isAuthorized: false
+    });
+    toast.success("you are logged out");
   }
 
   getTodos() {
@@ -172,6 +182,7 @@ export class Dashboard extends Component {
                   </InputGroup.Append>
                 </InputGroup>
               </div>
+              <LogOut handleLogOut={this.handleLogOut} />
             </div>
 
             <div className="body-container">
