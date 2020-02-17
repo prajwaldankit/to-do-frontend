@@ -26,10 +26,10 @@
   overflow-y: auto;
 }
 
-button {
+/* button {
   width: 100%;
   text-align: center;
-}
+} */
 
 .login-link,
 .register-link {

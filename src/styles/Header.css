@@ -1,0 +1,42 @@
+.heading.container {
+  padding: 5px 0;
+  background-color: #0a1427;
+}
+
+.heading.content {
+  display: flex;
+  justify-content: space-between;
+  color: #fffaff;
+}
+.heading.content .general {
+  display: flex;
+  align-items: center;
+}
+.app-icon {
+  display: inline-block;
+  width: 64px;
+  height: 64px;
+}
+
+.app-title {
+  margin-left: 30px;
+  font-size: 48px;
+  font-weight: bold;
+}
+
+.heading.content .user-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.heading.content .profile-name {
+  font-size: 22px;
+}
+
+.heading.content .user-options .btn.btn-logout {
+  margin-left: 30px;
+  height: 22px;
+  width: 22px;
+  background-image: url("./../assets/images/logOutIcon.png");
+  background-size: cover;
+}

@@ -3,7 +3,9 @@ import { toast } from "react-toastify";
 import { Modal, Button, InputGroup, FormControl } from "react-bootstrap";
 
 import "../styles/AddTodo.css";
-import { addToDoItem } from "./../services/todo";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./../styles/reset.css";
+import { addToDoItem } from "../services/todo";
 
 /**
  *

@@ -3,10 +3,11 @@ import React, { Component } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import "./styles/App.css";
+import "./styles/reset.css";
 import { Todo } from "./routes/Todo";
 import { Login } from "./routes/Login";
 import { Register } from "./routes/Register";
-import "bootstrap/dist/css/bootstrap.min.css";
+
 import { Dashboard } from "./routes/Dashboard";
 
 class App extends Component {

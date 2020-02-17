@@ -4,8 +4,9 @@ import { Button, Form } from "react-bootstrap";
 import { Link, Redirect } from "react-router-dom";
 
 import "../styles/App.css";
+import Header from "./../components/Header";
+import { loginUser } from "../services/user";
 import "react-toastify/dist/ReactToastify.css";
-import { loginUser } from "./../services/user";
 
 /**
  *
@@ -47,6 +48,7 @@ export class Login extends Component {
           "x-tokenRefresh",
           response.data.tokens.tokenRefresh
         );
+        localStorage.setItem("username", response.data.username);
         this.setState({
           isLoggedIn: true
         });
@@ -81,55 +83,50 @@ export class Login extends Component {
     if (this.state.isLoggedIn) return <Redirect to="/dashboard" />;
     else {
       return (
-        <div className="login-container">
-          <div className="login-card">
-            <div className="logo-holder">
-              <i className="fas fa-tasks logo-icon"></i>Todo-app
-            </div>
-            <Form>
-              <Form.Group controlId="email">
-                <Form.Label>Email address</Form.Label>
-                <Form.Control
-                  type="email"
-                  placeholder="email..."
-                  value={this.state.email.value || ""}
-                  onChange={this.onChangeHandler}
-                  isInvalid={this.state.email.isInvalid}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {this.state.email.invalidMessage}
-                </Form.Control.Feedback>
-              </Form.Group>
+        <>
+          <Header />
+          <div className="login container">
+            <div className="login content">
+              <Form>
+                <Form.Group controlId="email">
+                  <Form.Label>Email address</Form.Label>
+                  <Form.Control
+                    type="email"
+                    placeholder="email..."
+                    value={this.state.email.value || ""}
+                    onChange={this.onChangeHandler}
+                    isInvalid={this.state.email.isInvalid}
+                  />
+                </Form.Group>
 
-              <Form.Group controlId="password">
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                  type="password"
-                  placeholder="password..."
-                  value={this.state.password.value || ""}
-                  onChange={this.onChangeHandler}
-                  isInvalid={this.state.password.isInvalid}
-                />
+                <Form.Group controlId="password">
+                  <Form.Label>Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    placeholder="password..."
+                    value={this.state.password.value || ""}
+                    onChange={this.onChangeHandler}
+                    isInvalid={this.state.password.isInvalid}
+                  />
+                </Form.Group>
+                <Button
+                  variant="primary"
+                  type="submit"
+                  onClick={this.onSubmitClick}
+                  className="btn btn-login"
+                >
+                  Login
+                </Button>
                 <Form.Control.Feedback type="invalid">
-                  {this.state.password.invalidMessage}
+                  Something went wrong. Please try again.
                 </Form.Control.Feedback>
-              </Form.Group>
-              <Button
-                variant="primary"
-                type="submit"
-                onClick={this.onSubmitClick}
-              >
-                Login
-              </Button>
-              <Form.Control.Feedback type="invalid">
-                Something went wrong. Please try again.
-              </Form.Control.Feedback>
-            </Form>
-            <div className="register-link">
-              New here? <Link to="/register">Register Now</Link>
+              </Form>
+              <div className="register-link">
+                New here? <Link to="/register">Register Now</Link>
+              </div>
             </div>
           </div>
-        </div>
+        </>
       );
     }
   }

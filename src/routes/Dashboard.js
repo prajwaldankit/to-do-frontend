@@ -6,11 +6,12 @@ import { Form, InputGroup, Tab, Tabs } from "react-bootstrap";
 import "../styles/App.css";
 import "../styles/Dashboard.css";
 import FAB from "../components/FAB";
-import AddTodo from "../components/AddTodo";
-import ListItem from "../components/ListItem";
 import LogOut from "../components/LogOut";
+import AddTodo from "../components/AddTodo";
+import Header from "./../components/Header";
+import ListItem from "../components/ListItem";
 import emptyList from "../assets/images/emptyList.png";
-import { getToDoList, editToDoItem, removeToDoItem } from "./../services/todo";
+import { getToDoList, editToDoItem, removeToDoItem } from "../services/todo";
 
 /**
  *
@@ -155,75 +156,77 @@ export class Dashboard extends Component {
     if (this.state.isAuthorized) {
       let itemsToDisplay = this.getItemsToDisplay(this.state.currentTab);
       return (
-        <div className="dashboard-container">
-          <AddTodo
-            show={this.state.showModal}
-            handleClose={this.hideModal}
-            reloadList={this.getTodos}
-          />
-          <div className="dashboard-card">
-            <div className="header-container">
-              <div className="dashboard-logo-holder">
-                <i className="fas fa-tasks dashboard-logo-icon"></i>Todo-app
+        <>
+          <Header isLogged={true} handleLogOut={this.handleLogOut} />
+          <div className="dashboard-container">
+            <AddTodo
+              show={this.state.showModal}
+              handleClose={this.hideModal}
+              reloadList={this.getTodos}
+            />
+            <div className="dashboard-card">
+              <div className="header-container">
+                <div className="dashboard-logo-holder">
+                  <i className="fas fa-tasks dashboard-logo-icon"></i>Todo-app
+                </div>
+                <div className="search-holder">
+                  <InputGroup className="mb-3">
+                    <Form.Control
+                      placeholder="Enter your search item..."
+                      aria-label="Enter your search item..."
+                      aria-describedby="search"
+                      value={this.state.searchTerm}
+                      onChange={this.onSearch}
+                    />
+                    <InputGroup.Append>
+                      <InputGroup.Text id="search">
+                        <i className="fas fa-search"></i>
+                      </InputGroup.Text>
+                    </InputGroup.Append>
+                  </InputGroup>
+                </div>
               </div>
-              <div className="search-holder">
-                <InputGroup className="mb-3">
-                  <Form.Control
-                    placeholder="Enter your search item..."
-                    aria-label="Enter your search item..."
-                    aria-describedby="search"
-                    value={this.state.searchTerm}
-                    onChange={this.onSearch}
-                  />
-                  <InputGroup.Append>
-                    <InputGroup.Text id="search">
-                      <i className="fas fa-search"></i>
-                    </InputGroup.Text>
-                  </InputGroup.Append>
-                </InputGroup>
-              </div>
-              <LogOut handleLogOut={this.handleLogOut} />
-            </div>
 
-            <div className="body-container">
-              <Tabs
-                defaultActiveKey="all"
-                id="tabs"
-                onSelect={this.tabSelectedHandler}
-              >
-                <Tab eventKey="all" title="All" />
-                <Tab eventKey="completed" title="Completed" />
-                <Tab eventKey="remaining" title="Remaining" />
-              </Tabs>
-              <div className="list-holder">
-                {itemsToDisplay.length > 0 ? (
-                  itemsToDisplay.map((value, index) => {
-                    return (
-                      <ListItem
-                        key={index}
-                        data={value}
-                        onDelete={event => {
-                          this.onDeleteHandler(value);
-                        }}
-                        onCheck={event => {
-                          this.onCheckHandler(value);
-                        }}
-                        onEdit={event => {
-                          this.onEditHandler(value);
-                        }}
-                      />
-                    );
-                  })
-                ) : (
-                  <div className="empty-list">
-                    <img src={emptyList} alt="No Todos" />
-                  </div>
-                )}
+              <div className="body-container">
+                <Tabs
+                  defaultActiveKey="all"
+                  id="tabs"
+                  onSelect={this.tabSelectedHandler}
+                >
+                  <Tab eventKey="all" title="All" />
+                  <Tab eventKey="completed" title="Completed" />
+                  <Tab eventKey="remaining" title="Remaining" />
+                </Tabs>
+                <div className="list-holder">
+                  {itemsToDisplay.length > 0 ? (
+                    itemsToDisplay.map((value, index) => {
+                      return (
+                        <ListItem
+                          key={index}
+                          data={value}
+                          onDelete={event => {
+                            this.onDeleteHandler(value);
+                          }}
+                          onCheck={event => {
+                            this.onCheckHandler(value);
+                          }}
+                          onEdit={event => {
+                            this.onEditHandler(value);
+                          }}
+                        />
+                      );
+                    })
+                  ) : (
+                    <div className="empty-list">
+                      <img src={emptyList} alt="No Todos" />
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
+            <FAB onClick={this.onAddIconClick} />
           </div>
-          <FAB onClick={this.onAddIconClick} />
-        </div>
+        </>
       );
     } else {
       return <Redirect to="/login"></Redirect>;
