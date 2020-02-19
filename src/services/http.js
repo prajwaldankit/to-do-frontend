@@ -49,11 +49,7 @@ axios.interceptors.response.use(
     return response;
   },
   error => {
-    if (
-      error.response &&
-      error.response.status === 401 &&
-      error.response.data.message === "TokenExpired"
-    ) {
+    if (error.response && error.response.status === 401) {
       if (!getRefreshToken()) {
         return Promise.reject(error);
       }
