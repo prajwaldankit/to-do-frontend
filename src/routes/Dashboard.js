@@ -6,13 +6,15 @@ import { Form, InputGroup, Tab, Tabs } from "react-bootstrap";
 import "../styles/App.css";
 import "../styles/Dashboard.css";
 import FAB from "../components/FAB";
-import LogOut from "../components/LogOut";
+// import LogOut from "../components/LogOut";
 import AddTodo from "../components/AddTodo";
 import Header from "./../components/Header";
 import ListItem from "../components/ListItem";
 import emptyList from "../assets/images/emptyList.png";
 import { getToDoList, editToDoItem, removeToDoItem } from "../services/todo";
 
+import "./../styles/reset.css";
+import "./../styles/Header.css";
 /**
  *
  *
@@ -166,9 +168,6 @@ export class Dashboard extends Component {
             />
             <div className="dashboard-card">
               <div className="header-container">
-                <div className="dashboard-logo-holder">
-                  <i className="fas fa-tasks dashboard-logo-icon"></i>Todo-app
-                </div>
                 <div className="search-holder">
                   <InputGroup className="mb-3">
                     <Form.Control

@@ -5,6 +5,7 @@ export function getToDoList() {
 }
 
 export function addToDoItem(item) {
+  console.log("item data", item);
   return post("api/todos", item);
 }
 

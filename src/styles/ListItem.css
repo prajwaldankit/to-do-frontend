@@ -33,8 +33,14 @@
   cursor: pointer;
 }
 
-.delete-icon {
-  color: red;
+.btn-delete {
+  height: 22px;
+  width: 22px;
+  border: none;
+  padding: 5px;
+  background: red;
+  background-image: url("./../assets/images/deleteIcon.png");
+  background-size: cover;
 }
 
 .card-footer {

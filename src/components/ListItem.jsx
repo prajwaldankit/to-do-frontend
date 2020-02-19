@@ -12,7 +12,6 @@ import "../styles/ListItem.css";
  */
 export class ListItem extends Component {
   dateParser(date) {
-    console.log("date", date);
     return "Created at: " + date.slice(4, 24);
   }
 
@@ -24,10 +23,7 @@ export class ListItem extends Component {
     );
 
     let deleteIcon = (
-      <i
-        className="fas fa-trash-alt delete-icon"
-        onClick={this.props.onDelete}
-      ></i>
+      <button className="btn-delete" onClick={this.props.onDelete}></button>
     );
     let editIcon = (
       <i className="fas fa-pen edit-icon" onClick={this.props.onEdit}></i>

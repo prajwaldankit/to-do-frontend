@@ -45,12 +45,17 @@ export class AddTodo extends Component {
         content: this.state.todoContent
       })
         .then(response => {
-          if (response.status === 200) {
+          if (response.status === 201) {
             toast.success("Todo Added Successfully");
             this.props.handleClose();
             this.props.reloadList();
+            this.setState({
+              todoTitle: "",
+              todoContent: ""
+            });
           } else {
-            toast.error("Some error occured. Please try again later.");
+            console.log(response.status);
+            toast.error("status", response.status);
           }
         })
         .catch(err => {
