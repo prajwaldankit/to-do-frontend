@@ -4,17 +4,17 @@ import { Redirect } from "react-router-dom";
 import { Form, InputGroup, Tab, Tabs } from "react-bootstrap";
 
 import "../styles/App.css";
+import "./../styles/reset.css";
+import "./../styles/Header.css";
 import "../styles/Dashboard.css";
-import FAB from "../components/FAB";
-// import LogOut from "../components/LogOut";
+import AddIcon from "../components/FAB";
 import AddTodo from "../components/AddTodo";
 import Header from "./../components/Header";
 import ListItem from "../components/ListItem";
 import emptyList from "../assets/images/emptyList.png";
-import { getToDoList, editToDoItem, removeToDoItem } from "../services/todo";
+import * as todoServices from "../services/todoServices";
+import * as userServices from "./../services/userServices";
 
-import "./../styles/reset.css";
-import "./../styles/Header.css";
 /**
  *
  *
@@ -22,7 +22,7 @@ import "./../styles/Header.css";
  * @class Dashboard
  * @extends {Component}
  */
-export class Dashboard extends Component {
+class Dashboard extends Component {
   constructor() {
     super();
     this.state = {
@@ -30,16 +30,38 @@ export class Dashboard extends Component {
       title: "",
       content: "",
       isAuthorized: true,
-      userId: "",
+      userData: {},
       todos: [],
+      parentId: "",
+      isSubTask: false,
       currentTab: "all",
       showModal: false
     };
     this.getTodos = this.getTodos.bind(this);
     this.handleLogOut = this.handleLogOut.bind(this);
   }
+
+  componentWillMount() {
+    this.getUserLevel();
+    this.setState({
+      userData: this.props.location.state.userData
+    });
+  }
+
   componentDidMount() {
     this.getTodos();
+  }
+
+  getUserData() {
+    userServices.getUserData().then(res => {
+      console.log(res);
+    });
+  }
+
+  getUserLevel() {
+    this.setState({
+      level: localStorage.getItem("level")
+    });
   }
 
   handleLogOut() {
@@ -51,7 +73,8 @@ export class Dashboard extends Component {
   }
 
   getTodos() {
-    getToDoList()
+    todoServices
+      .getToDoList()
       .then(response => {
         this.setState({
           todos: response.data
@@ -67,7 +90,8 @@ export class Dashboard extends Component {
 
   onCheckHandler = value => {
     value.checked = !value.checked;
-    editToDoItem({ _id: value._id, checked: value.checked })
+    todoServices
+      .editToDoItem({ _id: value._id, checked: value.checked })
       .then(response => {
         toast.success(
           `${value.title} is now ${value.checked ? "checked" : "unchecked"}`
@@ -85,16 +109,11 @@ export class Dashboard extends Component {
   };
 
   onDeleteHandler = value => {
-    removeToDoItem(value)
-      .then(response => {
+    todoServices
+      .removeToDoItem(value)
+      .then(res => {
+        this.getTodos();
         toast.success("the item has been deleted");
-        let tempItems =
-          this.state.todos &&
-          this.state.todos.length &&
-          this.state.todos.filter(
-            (tempValue, index) => value._id !== tempValue._id
-          );
-        this.setState({ todos: tempItems });
       })
       .catch(err => {
         toast.error("the item could not be deleted");
@@ -144,13 +163,24 @@ export class Dashboard extends Component {
 
   onAddIconClick = () => {
     this.setState({
+      isSubTask: false,
       showModal: true
+    });
+  };
+
+  onAddSubTask = id => {
+    this.setState({
+      isSubTask: true,
+      showModal: true,
+      parentId: id
     });
   };
 
   hideModal = () => {
     this.setState({
-      showModal: false
+      isSubTask: false,
+      showModal: false,
+      parentId: ""
     });
   };
 
@@ -159,13 +189,24 @@ export class Dashboard extends Component {
       let itemsToDisplay = this.getItemsToDisplay(this.state.currentTab);
       return (
         <>
-          <Header isLogged={true} handleLogOut={this.handleLogOut} />
+          <Header
+            isLogged={true}
+            handleLogOut={this.handleLogOut}
+            userData={this.state.userData}
+          />
           <div className="dashboard-container">
-            <AddTodo
-              show={this.state.showModal}
-              handleClose={this.hideModal}
-              reloadList={this.getTodos}
-            />
+            {this.state.showModal ? (
+              <AddTodo
+                isSubTask={this.state.isSubTask}
+                parentId={this.state.parentId}
+                show={this.state.showModal}
+                handleClose={this.hideModal}
+                reloadList={this.getTodos}
+                level={this.state.userData.level}
+              />
+            ) : (
+              <> </>
+            )}
             <div className="dashboard-card">
               <div className="header-container">
                 <div className="search-holder">
@@ -203,6 +244,7 @@ export class Dashboard extends Component {
                         <ListItem
                           key={index}
                           data={value}
+                          userData={this.state.userData}
                           onDelete={event => {
                             this.onDeleteHandler(value);
                           }}
@@ -212,6 +254,7 @@ export class Dashboard extends Component {
                           onEdit={event => {
                             this.onEditHandler(value);
                           }}
+                          onAddSubList={this.onAddSubTask}
                         />
                       );
                     })
@@ -223,7 +266,7 @@ export class Dashboard extends Component {
                 </div>
               </div>
             </div>
-            <FAB onClick={this.onAddIconClick} />
+            <AddIcon onClick={this.onAddIconClick} />
           </div>
         </>
       );

@@ -15,7 +15,7 @@ function Header(props) {
           {props.isLogged ? (
             <div className="user-options">
               <span className="profile-name">
-                Hi, {localStorage.getItem("username")}
+                Hi, {props.userData.username}
               </span>
               <button
                 className="btn btn-logout"

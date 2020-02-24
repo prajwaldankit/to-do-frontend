@@ -36,7 +36,8 @@
 .btn-delete {
   height: 22px;
   width: 22px;
-  border: none;
+  border: 2px solid red;
+  border-radius: 5px;
   padding: 5px;
   background: red;
   background-image: url("./../assets/images/deleteIcon.png");

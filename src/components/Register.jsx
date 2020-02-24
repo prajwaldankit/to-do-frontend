@@ -5,23 +5,27 @@ import { Link, Redirect } from "react-router-dom";
 
 import "../styles/App.css";
 import Header from "./../components/Header";
-import { loginUser } from "../services/user";
 import "react-toastify/dist/ReactToastify.css";
+import { registerUser } from "../services/userServices";
 
 /**
  *
  *
  * @export
- * @class Login
+ * @class Register
  * @extends {Component}
  */
-export class Login extends Component {
+class Register extends Component {
   constructor() {
     super();
-
     this.state = {
       buttonClicked: false,
       email: {
+        value: "",
+        isInvalid: false,
+        invalidMessage: ""
+      },
+      username: {
         value: "",
         isInvalid: false,
         invalidMessage: ""
@@ -31,27 +35,26 @@ export class Login extends Component {
         isInvalid: false,
         invalidMessage: ""
       },
-      isLoggedIn: false
+      isRegistrationComplete: false
     };
   }
 
   onSubmitClick = event => {
     event.preventDefault();
-    loginUser({
+    registerUser({
       email: this.state.email.value,
-      password: this.state.password.value
+      password: this.state.password.value,
+      username: this.state.username.value
     })
       .then(response => {
-        toast.success("Logged in successfully");
-        localStorage.setItem("x-token", response.data.tokens.token);
-        localStorage.setItem(
-          "x-tokenRefresh",
-          response.data.tokens.tokenRefresh
-        );
-        localStorage.setItem("username", response.data.username);
-        this.setState({
-          isLoggedIn: true
-        });
+        if (response.status === 200) {
+          toast.success("User successfully created. Redirected to Login page");
+          this.setState({
+            isRegistrationComplete: true
+          });
+        } else {
+          toast.error("Some error occured. Please try again later.");
+        }
       })
       .catch(err => {
         toast.error(err.response.data.message);
@@ -80,13 +83,14 @@ export class Login extends Component {
   };
 
   render() {
-    if (this.state.isLoggedIn) return <Redirect to="/dashboard" />;
-    else {
+    if (this.state.isRegistrationComplete) {
+      return <Redirect to="/login" />;
+    } else
       return (
         <>
           <Header />
-          <div className="login container">
-            <div className="login content">
+          <div className="container">
+            <div className="content">
               <Form>
                 <Form.Group controlId="email">
                   <Form.Label>Email address</Form.Label>
@@ -96,6 +100,17 @@ export class Login extends Component {
                     value={this.state.email.value || ""}
                     onChange={this.onChangeHandler}
                     isInvalid={this.state.email.isInvalid}
+                  />
+                </Form.Group>
+
+                <Form.Group controlId="username">
+                  <Form.Label>Username</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="username..."
+                    value={this.state.username.value || ""}
+                    onChange={this.onChangeHandler}
+                    isInvalid={this.state.username.isInvalid}
                   />
                 </Form.Group>
 
@@ -113,23 +128,19 @@ export class Login extends Component {
                   variant="primary"
                   type="submit"
                   onClick={this.onSubmitClick}
-                  className="btn btn-login"
+                  className="btn btn-register"
                 >
-                  Login
+                  Register
                 </Button>
-                <Form.Control.Feedback type="invalid">
-                  Something went wrong. Please try again.
-                </Form.Control.Feedback>
               </Form>
-              <div className="register-link">
-                New here? <Link to="/register">Register Now</Link>
+              <div>
+                Already a member? <Link to="/login"> Login here </Link>
               </div>
             </div>
           </div>
         </>
       );
-    }
   }
 }
 
-export default Login;
+export default Register;

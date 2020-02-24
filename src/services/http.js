@@ -20,13 +20,23 @@ export function post(url, data) {
 export function patch(url, item) {
   return axios({
     method: "patch",
-    url: url + item._id,
+    url: url,
+    headers: getRequestHeader(),
+    data: item
+  });
+}
+
+export function put(url, item) {
+  return axios({
+    method: "put",
+    url: url,
     headers: getRequestHeader(),
     data: item
   });
 }
 
 export function remove(url, item) {
+  console.log("delete url", url + item._id);
   return axios({
     method: "delete",
     url: url + item._id,
@@ -34,14 +44,30 @@ export function remove(url, item) {
   });
 }
 
-function getRequestHeader() {
-  return {
-    authorization: `Bearer ${localStorage.getItem("x-token")}`
-  };
+function getAccessToken() {
+  if (localStorage.getItem("accessToken")) {
+    return `Bearer ${localStorage.getItem("accessToken")}`;
+  } else {
+    return null;
+  }
 }
 
 function getRefreshToken() {
-  return `Bearer ${localStorage.getItem("x-tokenRefresh")}`;
+  if (localStorage.getItem("refreshToken")) {
+    return `Bearer ${localStorage.getItem("refreshToken")}`;
+  } else {
+    return null;
+  }
+}
+
+function getRequestHeader() {
+  if (localStorage.getItem("accessToken")) {
+    return {
+      authorization: getAccessToken()
+    };
+  } else {
+    return null;
+  }
 }
 
 axios.interceptors.response.use(
@@ -63,8 +89,8 @@ axios.interceptors.response.use(
         headers: getRequestHeader()
       })
         .then(res => {
-          localStorage.setItem("x-token", res.data.tokens.token);
-          localStorage.setItem("x-tokenRefresh", res.data.tokens.tokenRefresh);
+          localStorage.setItem("accessToken", res.data.tokens.token);
+          localStorage.setItem("refreshToken", res.data.tokens.tokenRefresh);
           error.config.headers = getRequestHeader();
           return axios(error.config);
         })

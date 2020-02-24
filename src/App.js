@@ -4,32 +4,55 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import "./styles/App.css";
 import "./styles/reset.css";
-import { Todo } from "./routes/Todo";
-import { Login } from "./routes/Login";
-import { Register } from "./routes/Register";
-
-import { Dashboard } from "./routes/Dashboard";
+import TodoRoute from "./routes/TodoRoute";
+import LoginRoute from "./routes/LoginRoute";
+import ProfileRoute from "./routes/ProfileRoute";
+import RegisterRoute from "./routes/RegisterRoute";
+import DashboardRoute from "./routes/DashboardRoute";
 
 class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      isLoggedIn: false
+    };
+    this.checkLoggedIn = this.checkLoggedIn.bind(this);
+  }
+
+  checkLoggedIn() {
+    this.setState({
+      isLoggedIn: true
+    });
+  }
+
   render() {
     toast.configure();
     return (
       <Router>
         <Switch>
           <Route exact path="/">
-            <Dashboard />
+            <DashboardRoute />
           </Route>
           <Route exact path="/dashboard">
-            <Dashboard />
+            {props => {
+              return <DashboardRoute {...props} />;
+            }}
           </Route>
           <Route exact path="/login">
-            <Login />
+            <LoginRoute />
           </Route>
           <Route exact path="/register">
-            <Register />
+            <RegisterRoute />
           </Route>
-          <Route exact path="/:todoId">
-            <Todo />
+          <Route exact path="/profile/:profileId">
+            {props => {
+              return <ProfileRoute {...props} />;
+            }}
+          </Route>
+          <Route exact path="/todo/:todoId">
+            {props => {
+              return <TodoRoute {...props} />;
+            }}
           </Route>
         </Switch>
       </Router>

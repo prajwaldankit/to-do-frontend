@@ -14,7 +14,7 @@
 .btn-add {
   height: 64px;
   width: 64px;
-  border: none;
+  border: 3px solid purple;
   /* padding: 5px; */
   background-image: url("./../assets/images/addIcon.png");
   background-size: cover;
