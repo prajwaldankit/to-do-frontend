@@ -1,0 +1,50 @@
+.header__container {
+  background-color: #0a1427;
+  padding: 10px 0;
+  width: 100%;
+}
+
+.header__content {
+  width: 73.125em;
+  margin: 0 auto;
+  display: flex;
+  align-content: center;
+  justify-content: space-between;
+  color: #fffaff;
+}
+.header__general {
+  display: flex;
+  align-items: center;
+}
+.header__icon {
+  display: inline-block;
+  font-size: 48px;
+}
+
+.header__title {
+  margin-left: 15px;
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.header__options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.header__username {
+  font-size: 18px;
+}
+
+.header__profile-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.header__logout {
+  margin-left: 15px;
+  font-weight: 200;
+  color: white;
+  font-size: 20px;
+}

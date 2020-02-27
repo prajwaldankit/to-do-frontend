@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import React, { Component } from "react";
 
 import PriorityIcon from "./../components/PriorityIcon";
-import "../styles/ListItem.css";
 
 /**
  *
@@ -18,17 +17,29 @@ export class ListItem extends Component {
   }
 
   render() {
-    let checkItem = this.props.data.checked ? (
-      <i className="fas fa-check-circle" onClick={this.props.onCheck}></i>
-    ) : (
-      <i className="far fa-check-circle" onClick={this.props.onCheck}></i>
+    let checkItem = (
+      <button className="btn">
+        {this.props.data.checked ? (
+          <i className="fas fa-check-circle " onClick={this.props.onCheck}></i>
+        ) : (
+          <i className="far fa-check-circle " onClick={this.props.onCheck}></i>
+        )}
+      </button>
     );
 
     let deleteIcon = (
-      <button className="btn-delete" onClick={this.props.onDelete}></button>
+      // <button className="btn-delete" onClick={this.props.onDelete}></button>
+      <button className="btn btn-delete" onClick={this.props.onDelete}>
+        <i className="fa fa-trash" aria-hidden="true"></i>
+      </button>
     );
     let editIcon = (
-      <i className="fas fa-pen edit-icon" onClick={this.props.onEdit}></i>
+      <button className="btn">
+        <i
+          className="fas fa-pen edit-icon fa-lg"
+          onClick={this.props.onEdit}
+        ></i>
+      </button>
     );
     let checked = this.props.data.checked ? "checked" : "not-checked";
 
@@ -40,7 +51,8 @@ export class ListItem extends Component {
             <Card.Text>{this.props.data.content}</Card.Text>
 
             <div className="todo-tools">
-              {!(this.props.data.subTodos.length > 0) ? checkItem : <> </>}
+              {/* {!(this.props.data.subTodos.length > 0) ? checkItem : <> </>} */}
+              {checkItem}
               {editIcon}
               {deleteIcon}
               <button
@@ -48,28 +60,31 @@ export class ListItem extends Component {
               >
                 Add
               </button>
-              {this.props.data.subTodos.length > 0 ? (
-                <Link
-                  to={{
-                    pathname: `/todo/${this.props.data._id}`,
-                    state: {
-                      parent: this.props.data,
-                      userData: this.props.userData
-                    }
-                  }}
-                >
-                  <button className="btn btn-success">open</button>
-                </Link>
-              ) : (
-                <> </>
-              )}
+              <Link
+                to={{
+                  pathname: `/todo/${this.props.data._id}`,
+                  state: {
+                    parent: this.props.data,
+                    userData: this.props.userData
+                  },
+                  handleLogOut: this.props.handleLogOut
+                }}
+              >
+                <button className="btn btn-success btn-open-task">open</button>
+              </Link>
+
               <PriorityIcon priority={this.props.data.priority} />
             </div>
           </Card.Body>
           <Card.Footer className="text-muted">
             {`${this.dateParser(this.props.data.createdAt)} by ${
               this.props.data.author.username
-            } to ${this.props.data.assignedTo.username}`}
+            } to `}
+            <ul>
+              {this.props.data.assignedUsers.map((user, index) => {
+                return <li key={index}>{user.username}</li>;
+              })}
+            </ul>
           </Card.Footer>
         </Card>
       </div>

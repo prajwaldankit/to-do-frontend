@@ -1,17 +1,12 @@
 import { toast } from "react-toastify";
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
-import { Form, InputGroup, Tab, Tabs } from "react-bootstrap";
 
-import "../styles/App.css";
-import "./../styles/reset.css";
-import "./../styles/Header.css";
-import "../styles/Dashboard.css";
-import AddIcon from "../components/FAB";
 import AddTodo from "../components/AddTodo";
 import Header from "./../components/Header";
 import ListItem from "../components/ListItem";
-import emptyList from "../assets/images/emptyList.png";
+import Loading from "./Loading";
+// import emptyList from "../assets/images/emptyList.png";
 import * as todoServices from "../services/todoServices";
 import * as userServices from "./../services/userServices";
 
@@ -31,7 +26,9 @@ class Dashboard extends Component {
       content: "",
       isAuthorized: true,
       userData: {},
+      hasUserData: false,
       todos: [],
+      hasTodoList: false,
       parentId: "",
       isSubTask: false,
       currentTab: "all",
@@ -41,20 +38,17 @@ class Dashboard extends Component {
     this.handleLogOut = this.handleLogOut.bind(this);
   }
 
-  componentWillMount() {
-    this.getUserLevel();
-    this.setState({
-      userData: this.props.location.state.userData
-    });
-  }
-
   componentDidMount() {
+    this.getUserData();
     this.getTodos();
   }
 
   getUserData() {
     userServices.getUserData().then(res => {
-      console.log(res);
+      this.setState({
+        userData: res.data,
+        hasUserData: true
+      });
     });
   }
 
@@ -77,7 +71,8 @@ class Dashboard extends Component {
       .getToDoList()
       .then(response => {
         this.setState({
-          todos: response.data
+          todos: response.data,
+          hasTodoList: true
         });
       })
       .catch(err => {
@@ -192,81 +187,110 @@ class Dashboard extends Component {
           <Header
             isLogged={true}
             handleLogOut={this.handleLogOut}
+            hasUserData={this.state.hasUserData}
             userData={this.state.userData}
           />
-          <div className="dashboard-container">
-            {this.state.showModal ? (
-              <AddTodo
-                isSubTask={this.state.isSubTask}
-                parentId={this.state.parentId}
-                show={this.state.showModal}
-                handleClose={this.hideModal}
-                reloadList={this.getTodos}
-                level={this.state.userData.level}
-              />
-            ) : (
-              <> </>
-            )}
-            <div className="dashboard-card">
-              <div className="header-container">
-                <div className="search-holder">
-                  <InputGroup className="mb-3">
-                    <Form.Control
-                      placeholder="Enter your search item..."
-                      aria-label="Enter your search item..."
-                      aria-describedby="search"
-                      value={this.state.searchTerm}
-                      onChange={this.onSearch}
-                    />
-                    <InputGroup.Append>
-                      <InputGroup.Text id="search">
-                        <i className="fas fa-search"></i>
-                      </InputGroup.Text>
-                    </InputGroup.Append>
-                  </InputGroup>
+          <div className="dashboard__container">
+            <div className="dashboard__content">
+              <div className="dashboard__options">
+                <button
+                  className="btn dashboard__addIcon"
+                  onClick={this.onAddIconClick}
+                >
+                  <i className="fas fa-plus"></i>
+                </button>
+                <div className="dashboard__searchContainer">
+                  <input
+                    type="text"
+                    placeholder="Enter your search item..."
+                    name="search"
+                    className="dashboard__searchField"
+                    value={this.state.searchTerm}
+                    onChange={this.onSearch}
+                  />
+                  <i className="fas fa-search dashboard__searchIcon"></i>
                 </div>
+                <nav className="dashboard__tabs">
+                  <button
+                    className={
+                      "btn dashboard__tab" +
+                      (this.state.currentTab === "all" ? "--active" : "")
+                    }
+                    onClick={() => this.tabSelectedHandler("all")}
+                  >
+                    All
+                  </button>
+                  <button
+                    className={
+                      "btn dashboard__tab" +
+                      (this.state.currentTab === "completed" ? "--active" : "")
+                    }
+                    onClick={() => this.tabSelectedHandler("completed")}
+                  >
+                    Completed
+                  </button>
+                  <button
+                    className={
+                      "btn dashboard__tab" +
+                      (this.state.currentTab === "remaining" ? "--active" : "")
+                    }
+                    onClick={() => this.tabSelectedHandler("remaining")}
+                  >
+                    Remaining
+                  </button>
+                </nav>
               </div>
 
               <div className="body-container">
-                <Tabs
-                  defaultActiveKey="all"
-                  id="tabs"
-                  onSelect={this.tabSelectedHandler}
-                >
-                  <Tab eventKey="all" title="All" />
-                  <Tab eventKey="completed" title="Completed" />
-                  <Tab eventKey="remaining" title="Remaining" />
-                </Tabs>
-                <div className="list-holder">
-                  {itemsToDisplay.length > 0 ? (
-                    itemsToDisplay.map((value, index) => {
-                      return (
-                        <ListItem
-                          key={index}
-                          data={value}
-                          userData={this.state.userData}
-                          onDelete={event => {
-                            this.onDeleteHandler(value);
-                          }}
-                          onCheck={event => {
-                            this.onCheckHandler(value);
-                          }}
-                          onEdit={event => {
-                            this.onEditHandler(value);
-                          }}
-                          onAddSubList={this.onAddSubTask}
+                {this.state.hasTodoList ? (
+                  <div className="list-holder">
+                    {itemsToDisplay.length > 0 ? (
+                      itemsToDisplay.map((value, index) => {
+                        return (
+                          <ListItem
+                            key={index}
+                            data={value}
+                            userData={this.state.userData}
+                            onDelete={event => {
+                              this.onDeleteHandler(value);
+                            }}
+                            onCheck={event => {
+                              this.onCheckHandler(value);
+                            }}
+                            onEdit={event => {
+                              this.onEditHandler(value);
+                            }}
+                            onAddSubList={this.onAddSubTask}
+                            handleLogOut={this.handleLogOut}
+                          />
+                        );
+                      })
+                    ) : (
+                      <div className="empty-list">
+                        <img
+                          src="./assets/icons/emptyList.png"
+                          alt="No Todos"
                         />
-                      );
-                    })
-                  ) : (
-                    <div className="empty-list">
-                      <img src={emptyList} alt="No Todos" />
-                    </div>
-                  )}
-                </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <Loading />
+                )}
               </div>
+              {this.state.showModal ? (
+                <AddTodo
+                  isSubTask={this.state.isSubTask}
+                  parentId={this.state.parentId}
+                  show={this.state.showModal}
+                  handleClose={this.hideModal}
+                  reloadList={this.getTodos}
+                  level={this.state.userData.level}
+                />
+              ) : (
+                <> </>
+              )}
             </div>
-            <AddIcon onClick={this.onAddIconClick} />
           </div>
         </>
       );

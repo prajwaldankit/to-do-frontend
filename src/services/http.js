@@ -89,8 +89,9 @@ axios.interceptors.response.use(
         headers: getRequestHeader()
       })
         .then(res => {
-          localStorage.setItem("accessToken", res.data.tokens.token);
-          localStorage.setItem("refreshToken", res.data.tokens.tokenRefresh);
+          console.log("response from token", res);
+          localStorage.setItem("accessToken", res.data.token);
+          localStorage.setItem("refreshToken", res.data.tokenRefresh);
           error.config.headers = getRequestHeader();
           return axios(error.config);
         })

@@ -1,33 +1,44 @@
-import React from "react";
+import React, { Fragment } from "react";
 
-import "./../styles/Header.css";
-import AppIcon from "./../assets/images/ToDoIcon.png";
+import { getProfileImage } from "./../services/userServices.js";
 
 function Header(props) {
   return (
-    <>
-      <div className="heading container">
-        <div className="heading content">
-          <div className="general">
-            <img src={AppIcon} className="app-icon" alt="App Logo" />
-            <span className="app-title">To-Do App</span>
+    <Fragment>
+      <div className="header__container">
+        <div className="header__content">
+          <div className="header__general">
+            <i className="fas fa-list header__icon"></i>
+            <span className="header__title">To-Do App</span>
           </div>
           {props.isLogged ? (
-            <div className="user-options">
-              <span className="profile-name">
+            <div className="header__options">
+              <span className="header__username">
                 Hi, {props.userData.username}
               </span>
-              <button
-                className="btn btn-logout"
+              <span>
+                {!(props.hasUserData && getProfileImage(props.userData)) ? (
+                  <i className="fas fa-user header__profile-img"></i>
+                ) : (
+                  <img
+                    className="header__profile-img"
+                    src={getProfileImage(props.userData)}
+                    alt="profile img"
+                  />
+                )}
+              </span>
+              <i
+                className="btn fa fa-sign-out header__logout "
+                aria-hidden="true"
                 onClick={e => props.handleLogOut()}
-              ></button>
+              ></i>
             </div>
           ) : (
             <></>
           )}
         </div>
       </div>
-    </>
+    </Fragment>
   );
 }
 

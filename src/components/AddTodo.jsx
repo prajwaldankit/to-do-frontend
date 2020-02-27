@@ -1,10 +1,6 @@
 import React, { Component } from "react";
 import { toast } from "react-toastify";
-import { Modal, Button, InputGroup, FormControl } from "react-bootstrap";
 
-import "../styles/AddTodo.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./../styles/reset.css";
 import * as todoServices from "../services/todoServices";
 import * as userServices from "../services/userServices";
 
@@ -16,29 +12,22 @@ import * as userServices from "../services/userServices";
  * @extends {Component}
  */
 export class AddTodo extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      isSubTask: false,
+      isSubTask: this.props.isSubTask || false,
       isAdmin: false,
-      titleModal: "",
+      titleModal: this.props.titleModal || "",
       todoTitle: "",
       todoContent: "",
       assignedTo: "",
+      selectedUserIds: [],
+      selectedUsers: [],
       priority: "pending",
-      parentId: "",
-      level: "user",
+      parentId: this.props.parentId || "",
+      level: this.props.level || "user",
       users: []
     };
-  }
-
-  componentWillMount() {
-    this.setState({
-      isSubTask: this.props.isSubTask,
-      titleModal: this.props.titleModal,
-      parentId: this.props.parentId,
-      level: this.props.level || "user"
-    });
   }
 
   componentDidMount() {
@@ -53,14 +42,18 @@ export class AddTodo extends Component {
 
   selectAssignedTo(event) {
     const userId = this.findUserId(event.target.value);
-    console.log("userId", userId);
     this.setState({
-      assignedTo: userId
+      assignedTo: userId,
+      selectedUsers: !this.state.selectedUsers.includes(event.target.value)
+        ? [...this.state.selectedUsers, event.target.value]
+        : [...this.state.selectedUsers],
+      selectedUserIds: !this.state.selectedUserIds.includes(userId)
+        ? [...this.state.selectedUserIds, userId]
+        : [...this.state.selectedUserIds]
     });
   }
 
   findUserId(username) {
-    console.log("username", username);
     return this.state.users.filter(user => {
       return user.username === username;
     })[0]._id;
@@ -69,8 +62,7 @@ export class AddTodo extends Component {
   getUsers() {
     userServices.getUsers().then(response => {
       this.setState({
-        users: response.data.message,
-        assignedTo: response.data.message[0]._id || null
+        users: response.data
       });
     });
   }
@@ -87,6 +79,20 @@ export class AddTodo extends Component {
     });
   };
 
+  onRemoveSelectedUser(value) {
+    const indexToRemove = this.state.selectedUsers.indexOf(value);
+    this.setState({
+      selectedUsers: [
+        ...this.state.selectedUsers.slice(0, indexToRemove),
+        ...this.state.selectedUsers.slice(indexToRemove + 1)
+      ],
+      selectedUserIds: [
+        ...this.state.selectedUserIds.slice(0, indexToRemove),
+        ...this.state.selectedUserIds.slice(indexToRemove + 1)
+      ]
+    });
+  }
+
   onSubmitClicked = event => {
     if (this.state.todoTitle === "") {
       toast.error("Todo title cannot be empty");
@@ -98,7 +104,8 @@ export class AddTodo extends Component {
             title: this.state.todoTitle,
             content: this.state.todoContent,
             assignedTo: this.state.assignedTo,
-            priority: this.state.priority
+            priority: this.state.priority,
+            selectedUsers: this.state.selectedUserIds
           })
           .then(response => {
             if (response.status === 201) {
@@ -144,84 +151,91 @@ export class AddTodo extends Component {
 
   render() {
     return (
-      <>
-        <Modal show={this.props.show} onHide={this.props.handleClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>
+      <div className="modal__container">
+        <div className="modal__content">
+          <div className="modal__header">
+            <div className="model__title">
               {!this.state.isSubTask ? "Add Task" : "Add Sub Task"}
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <InputGroup className="mb-3">
-              <InputGroup.Prepend>
-                <InputGroup.Text>Title</InputGroup.Text>
-              </InputGroup.Prepend>
-              <FormControl
-                aria-label="Title of your todo"
+            </div>
+            <button className="btn" onClick={e => this.props.handleClose()}>
+              <i className="far fa-window-close"></i>
+            </button>
+          </div>
+          <div className="modal__body">
+            <div>
+              <label htmlFor="title">Title:</label>
+              <input
+                type="text"
+                name="title"
+                placeholder="Enter title..."
+                id="title"
                 value={this.state.todoTitle}
                 onChange={this.onTodoTitleChanged}
               />
-            </InputGroup>
-
-            <InputGroup>
-              <InputGroup.Prepend>
-                <InputGroup.Text>Content</InputGroup.Text>
-              </InputGroup.Prepend>
-              <FormControl
-                as="textarea"
-                aria-label="Content of your todo"
+              <label htmlFor="title">Content:</label>
+              <input
+                type="text"
+                name="content"
+                placeholder="Enter content..."
+                id="content"
                 value={this.state.todoContent}
                 onChange={this.onTodoContentChanged}
               />
-            </InputGroup>
-            <label htmlFor="priority"> Priority:</label>
-            <select
-              id="priority"
-              name="prioriy"
-              onClick={e => this.selectPriority(e)}
-            >
-              <option value="pending">Pending</option>
-              <option value="high">High</option>
-              <option value="moderate">Moderate</option>
-              <option value="low">Low</option>
-            </select>
-            {this.state.level === "admin" ? (
-              <>
-                <label htmlFor="user"> Assign to:</label>
-                <select
-                  id="user"
-                  name="user"
-                  onClick={e => this.selectAssignedTo(e)}
-                >
-                  {this.state.users.map(user => {
-                    return (
-                      <option key={user._id} value={user.username}>
-                        {user.username}
-                      </option>
-                    );
-                  })}
-                </select>
-              </>
-            ) : (
-              // <input list="browsers" name="browser">
-              //   <datalist id="browsers">
-              //     <option value="Internet Explorer" />
-              //     <option value="Firefox" />
-              //     <option value="Chrome" />
-              //     <option value="Opera" />
-              //     <option value="Safari" />
-              //   </datalist>
-              // </input>
-              <> </>
-            )}
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="primary" onClick={this.onSubmitClicked}>
+              <label htmlFor="priority"> Priority:</label>
+              <select
+                id="priority"
+                name="prioriy"
+                onClick={e => this.selectPriority(e)}
+              >
+                <option value="pending">Pending</option>
+                <option value="high">High</option>
+                <option value="moderate">Moderate</option>
+                <option value="low">Low</option>
+              </select>
+              {this.state.level === "admin" ? (
+                <>
+                  <label htmlFor="user"> Assign to:</label>
+                  <select
+                    id="user"
+                    name="user"
+                    onClick={e => this.selectAssignedTo(e)}
+                  >
+                    {this.state.users.map(user => {
+                      return (
+                        <option key={user._id} value={user.username}>
+                          {user.username}
+                        </option>
+                      );
+                    })}
+                  </select>
+                  Selected Users:{" "}
+                  <ol>
+                    {this.state.selectedUsers.map((value, index) => {
+                      return (
+                        <li key={index}>
+                          {value}{" "}
+                          <button
+                            onClick={() => this.onRemoveSelectedUser(value)}
+                          >
+                            X
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ol>
+                </>
+              ) : (
+                <> </>
+              )}
+            </div>
+          </div>
+          <div className="modal__footer">
+            <button className="btn " onClick={this.onSubmitClicked}>
               Add Todo
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      </>
+            </button>
+          </div>
+        </div>
+      </div>
     );
   }
 }

@@ -3,9 +3,7 @@ import React, { Component } from "react";
 import { Button, Form } from "react-bootstrap";
 import { Link, Redirect } from "react-router-dom";
 
-import "../styles/App.css";
 import Header from "./../components/Header";
-import "react-toastify/dist/ReactToastify.css";
 import { registerUser } from "../services/userServices";
 
 /**

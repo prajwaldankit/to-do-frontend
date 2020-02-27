@@ -1,10 +1,7 @@
 import React, { Component } from "react";
-import { toast } from "react-toastify";
 import { Card } from "react-bootstrap";
 
-import "../styles/AddTodo.css";
-import "./../styles/reset.css";
-import "bootstrap/dist/css/bootstrap.min.css";
+import PriorityIcon from "./PriorityIcon";
 
 /**
  *
@@ -22,36 +19,47 @@ class SubList extends Component {
   }
 
   componentDidMount() {
+    this.loadStateFromProps();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.data !== this.props.data) {
+      this.loadStateFromProps();
+    }
+  }
+
+  loadStateFromProps() {
     this.setState({
       subTodo: this.props.data
     });
   }
 
   render() {
-    let checkItem = this.props.data.checked ? (
-      <i
-        className="fas fa-check-circle"
-        onClick={e => this.props.onCheck(this.state.subTodo)}
-      ></i>
-    ) : (
-      <i
-        className="far fa-check-circle"
-        onClick={e => this.props.onCheck(this.state.subTodo)}
-      ></i>
+    let checkItem = (
+      <button className="btn">
+        {this.props.data.checked ? (
+          <i className="fas fa-check-circle " onClick={this.props.onCheck}></i>
+        ) : (
+          <i className="far fa-check-circle " onClick={this.props.onCheck}></i>
+        )}
+      </button>
     );
 
     let deleteIcon = (
-      <button
-        className="btn-delete"
-        onClick={e =>
-          this.props.onDelete(this.props.parent._id, this.state.subTodo)
-        }
-      ></button>
+      <button className="btn btn-delete" onClick={this.props.onDelete}>
+        <i className="fa fa-trash" aria-hidden="true"></i>
+      </button>
     );
     let editIcon = (
-      <i className="fas fa-pen edit-icon" onClick={this.props.onEdit}></i>
+      <button className="btn">
+        <i
+          className="fas fa-pen edit-icon fa-lg"
+          onClick={this.props.onEdit}
+        ></i>
+      </button>
     );
     let checked = this.props.data.checked ? "checked" : "not-checked";
+
     return (
       <div className="list-item">
         <Card>
@@ -62,7 +70,14 @@ class SubList extends Component {
               {checkItem}
               {editIcon}
               {deleteIcon}
+              <PriorityIcon priority={this.state.subTodo.priority} />
             </div>
+            Assigned To:
+            {this.state.subTodo.assignedTo ? (
+              `${this.state.subTodo.assignedTo.username}`
+            ) : (
+              <> Loading... </>
+            )}
           </Card.Body>
         </Card>
       </div>

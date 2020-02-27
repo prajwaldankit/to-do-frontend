@@ -8,9 +8,13 @@ export function loginUser(data) {
   return post("/users/login", data);
 }
 
-export function getUserData(user) {
-  console.log("user in user services", user);
-  return get(`/users/${user._id}`);
+export function getUserData() {
+  return get("/users/user");
+}
+
+export function getProfileImage(user) {
+  if (user._id) return `http://localhost:8000/static/${user._id}.jpeg`;
+  return null;
 }
 
 export function getUsers() {

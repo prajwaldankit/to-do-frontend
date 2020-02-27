@@ -3,10 +3,8 @@ import React, { Component } from "react";
 import { Form } from "react-bootstrap";
 import { Link, Redirect } from "react-router-dom";
 
-import "../styles/App.css";
 import Header from "./Header";
 import { loginUser } from "./../services/userServices";
-import "react-toastify/dist/ReactToastify.css";
 
 /**
  *
@@ -43,7 +41,7 @@ class Login extends Component {
       password: this.state.password.value
     })
       .then(response => {
-        console.log(response);
+        // console.log(response);
         localStorage.setItem("accessToken", response.data.tokens.token);
         localStorage.setItem("refreshToken", response.data.tokens.tokenRefresh);
         this.setState({

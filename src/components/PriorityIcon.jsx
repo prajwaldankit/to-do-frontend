@@ -1,11 +1,10 @@
 import React from "react";
 
-import HighPriority from "./../assets/images/highPriority.png";
-import ModeratePriority from "./../assets/images/modPriority.png";
-import LowPriority from "./../assets/images/lowPriority.png";
-import PendingPriority from "./../assets/images/pendingPriority.png";
-
 export default function PriorityIcon(props) {
+  let HighPriority = "/assets/icons/highPriority.png";
+  let ModeratePriority = "/assets/icons/modPriority.png";
+  let LowPriority = "/assets/icons/lowPriority.png";
+  let PendingPriority = "/assets/icons/pendingPriority.png";
   let imgSrc = PendingPriority;
   if (props.priority === "high") {
     imgSrc = HighPriority;
@@ -21,8 +20,8 @@ export default function PriorityIcon(props) {
       <img
         src={imgSrc}
         alt={`${props.priority} Priority Icon`}
-        width="32px"
-        height="32px"
+        width="24px"
+        height="24px"
       />
     </>
   );

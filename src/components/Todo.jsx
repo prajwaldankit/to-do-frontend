@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 
 import Header from "../components/Header";
 import SubList from "../components/SubList";
+import AddSubTodoForm from "./AddSubTodoForm";
 import PriorityIcon from "../components/PriorityIcon";
 import * as todoServices from "../services/todoServices";
 import * as userServices from "./../services/userServices";
@@ -18,27 +19,35 @@ class Todo extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      parent: {},
-      taskStatus: "false",
+      parent: this.props.location.state.parent || {},
+      taskStatus: this.props.location.state.parent.checked || false,
       subTodos: [],
       todoTitle: "",
       todoContent: "",
-      userData: {}
+      userData: {},
+      hasUserData: false
     };
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.onCheckHandler = this.onCheckHandler.bind(this);
+    this.selectPriority = this.selectPriority.bind(this);
     this.onRemoveSubTodo = this.onRemoveSubTodo.bind(this);
-  }
-
-  componentWillMount() {
-    this.setState({
-      parent: this.props.location.state.parent,
-      taskStatus: this.props.location.state.parent.checked,
-      userData: this.props.location.state.userData
-    });
+    this.selectAssignedTo = this.selectAssignedTo.bind(this);
+    this.onTodoTitleChanged = this.onTodoTitleChanged.bind(this);
+    this.onTodoContentChanged = this.onTodoContentChanged.bind(this);
   }
 
   componentDidMount() {
     this.getSubTodos();
+    this.getUserData();
+  }
+
+  getUserData() {
+    userServices.getUserData().then(res => {
+      this.setState({
+        userData: res.data,
+        hasUserData: true
+      });
+    });
   }
 
   getSubTodos() {
@@ -55,16 +64,35 @@ class Todo extends Component {
     return remaining.length ? true : false;
   }
 
-  onTodoTitleChanged(event) {
+  onTodoTitleChanged(value) {
     this.setState({
-      todoTitle: event.target.value
+      todoTitle: value
     });
   }
 
-  onTodoContentChanged(event) {
+  onTodoContentChanged(value) {
     this.setState({
-      todoContent: event.target.value
+      todoContent: value
     });
+  }
+
+  selectPriority(value) {
+    this.setState({
+      priority: value
+    });
+  }
+
+  selectAssignedTo(value) {
+    const userId = this.findUserId(value);
+    this.setState({
+      assignedTo: userId
+    });
+  }
+
+  findUserId(username) {
+    return this.state.parent.assignedUsers.filter(user => {
+      return user.username === username;
+    })[0]._id;
   }
 
   handleSubmit(event) {
@@ -73,9 +101,11 @@ class Todo extends Component {
     } else {
       event.preventDefault();
       todoServices
-        .addSubToDoItem(this.props.location.state.parent._id, {
+        .addSubToDoItem(this.state.parent._id, {
           title: this.state.todoTitle,
-          content: this.state.todoContent
+          content: this.state.todoContent,
+          priority: this.state.priority,
+          assignedTo: this.state.assignedTo
         })
         .then(response => {
           if (response.status === 201) {
@@ -148,38 +178,34 @@ class Todo extends Component {
       <>
         <Header
           isLogged={true}
-          handleLogOut={this.handleLogOut}
+          handleLogOut={this.props.location.handleLogOut}
           userData={this.state.userData}
+          hasUserData={this.state.hasUserData}
         />
         <div className="remaining-tabs">
           <h1>{this.state.parent.title}</h1>
           <h2>Status: {this.state.taskStatus ? "Completed" : "Remaining"}</h2>
           <PriorityIcon priority={this.state.parent.priority} />
-          <form>
-            <label htmlFor="title">Title</label>
-            <input
-              type="text"
-              name="title"
-              id="title"
-              value={this.state.todoTitle}
-              onChange={e => this.onTodoTitleChanged(e)}
-            />
-            <label htmlFor="content">Content</label>
-            <input
-              type="text"
-              name="content"
-              id="content"
-              value={this.state.todoContent}
-              onChange={e => this.onTodoContentChanged(e)}
-            />
-            <button type="submit" onClick={e => this.handleSubmit(e)}>
-              Add
-            </button>
-          </form>
+          <AddSubTodoForm
+            todoTitle={this.state.todoTitle}
+            todoContent={this.state.todoContent}
+            onTodoTitleChanged={this.onTodoTitleChanged}
+            onTodoContentChanged={this.onTodoContentChanged}
+            onSelectPriority={this.selectPriority}
+            onselectAssignedTo={this.selectAssignedTo}
+            assignedUsers={this.state.parent.assignedUsers}
+            handleSubmit={this.handleSubmit}
+          />
+          These tasks are assigned to:
+          <ul>
+            {this.state.parent.assignedUsers.map((value, index) => {
+              return <li key={index}>{value.username}</li>;
+            })}
+          </ul>
           {this.state.subTodos.map((item, index) => {
             return (
               <SubList
-                key={item._id}
+                key={index}
                 data={item}
                 parent={this.state.parent}
                 onCheck={this.onCheckHandler}

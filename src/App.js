@@ -1,9 +1,9 @@
 import { toast } from "react-toastify";
 import React, { Component } from "react";
+// import "bootstrap/dist/css/bootstrap.min.css";
+import "react-toastify/dist/ReactToastify.css";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
-import "./styles/App.css";
-import "./styles/reset.css";
 import TodoRoute from "./routes/TodoRoute";
 import LoginRoute from "./routes/LoginRoute";
 import ProfileRoute from "./routes/ProfileRoute";
@@ -31,7 +31,9 @@ class App extends Component {
       <Router>
         <Switch>
           <Route exact path="/">
-            <DashboardRoute />
+            {props => {
+              return <DashboardRoute {...props} />;
+            }}
           </Route>
           <Route exact path="/dashboard">
             {props => {

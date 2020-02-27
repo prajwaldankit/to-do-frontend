@@ -13,6 +13,7 @@ export function addToDoItem(item) {
 }
 
 export function addSubToDoItem(parentId, item) {
+  console.log("adding sub todo");
   return put(`api/todos/${parentId}`, item);
 }
 

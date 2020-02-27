@@ -34,14 +34,20 @@
 }
 
 .btn-delete {
-  height: 22px;
-  width: 22px;
+  height: 32px;
+  width: 32px;
   border: 2px solid red;
-  border-radius: 5px;
+  border-radius: 50%;
   padding: 5px;
   background: red;
-  background-image: url("./../assets/images/deleteIcon.png");
+  color: white;
+  /* background-image: url("./../icons/deleteIcon.png"); */
   background-size: cover;
+}
+
+.btn.btn-success.btn-open-task {
+  background-color: #28a745;
+  border-color: #28a745;
 }
 
 .card-footer {
